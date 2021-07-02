@@ -107,7 +107,9 @@ func (p *LDAPUserProvider) checkServer() (err error) {
 	}
 
 	searchRequest := ldap.NewSearchRequest("", ldap.ScopeBaseObject, ldap.NeverDerefAliases,
-		1, 0, false, "(objectClass=*)", []string{ldapSupportedExtensionAttribute}, nil)
+		1, 0, false, "(objectClass=*)",
+		[]string{ldapSupportedExtensionAttribute, ldapSupportedControlAttribute, ldapSupportedCapabilitiesAttribute},
+		nil)
 
 	sr, err := conn.Search(searchRequest)
 	if err != nil {
@@ -120,8 +122,9 @@ func (p *LDAPUserProvider) checkServer() (err error) {
 
 	// Iterate the attribute values to see what the server supports.
 	for _, attr := range sr.Entries[0].Attributes {
-		if attr.Name == ldapSupportedExtensionAttribute {
-			p.logger.Tracef("LDAP Supported Extension OIDs: %s", strings.Join(attr.Values, ", "))
+		switch attr.Name {
+		case ldapSupportedExtensionAttribute:
+			p.logger.Warnf("LDAP Supported Extension OIDs: %s", strings.Join(attr.Values, ", "))
 
 			for _, oid := range attr.Values {
 				if oid == ldapOIDPasswdModifyExtension {
@@ -129,8 +132,12 @@ func (p *LDAPUserProvider) checkServer() (err error) {
 					break
 				}
 			}
-
-			break
+		case ldapSupportedControlAttribute:
+			p.logger.Warnf("LDAP Supported Control OIDs: %s", strings.Join(attr.Values, ", "))
+		case ldapSupportedCapabilitiesAttribute:
+			p.logger.Warnf("LDAP Supported Capabilities OIDs: %s", strings.Join(attr.Values, ", "))
+		default:
+			p.logger.Errorf("LDAP %s attribute (unexpected): %s", attr.Name, strings.Join(attr.Values, ", "))
 		}
 	}
 

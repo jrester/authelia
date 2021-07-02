@@ -26,8 +26,10 @@ const (
 )
 
 const (
-	ldapSupportedExtensionAttribute = "supportedExtension"
-	ldapOIDPasswdModifyExtension    = "1.3.6.1.4.1.4203.1.11.1" // http://oidref.com/1.3.6.1.4.1.4203.1.11.1
+	ldapSupportedExtensionAttribute    = "supportedExtension"
+	ldapSupportedControlAttribute      = "supportedControl"
+	ldapSupportedCapabilitiesAttribute = "supportedCapabilities"
+	ldapOIDPasswdModifyExtension       = "1.3.6.1.4.1.4203.1.11.1" // http://oidref.com/1.3.6.1.4.1.4203.1.11.1
 )
 
 // PossibleMethods is the set of all possible 2FA methods.
