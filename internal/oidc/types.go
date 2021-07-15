@@ -82,32 +82,66 @@ type Audience struct {
 	Description string `json:"description"`
 }
 
-// WellKnownConfiguration is the OIDC well known config struct.
+// WellKnownConfiguration is the OIDC well known config struct. The following spec's document this struct:
 //
-// See https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+// OpenID Connect Discovery https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+//
+// OpenID Connect Session Management https://openid.net/specs/openid-connect-session-1_0-17.html#OPMetadata
+//
+// OAuth 2.0 Authorization Server Metadata https://datatracker.ietf.org/doc/html/rfc8414#section-2
 type WellKnownConfiguration struct {
 	Issuer  string `json:"issuer"`
 	JWKSURI string `json:"jwks_uri"`
 
 	AuthorizationEndpoint string `json:"authorization_endpoint"`
 	TokenEndpoint         string `json:"token_endpoint"`
-	RevocationEndpoint    string `json:"revocation_endpoint"`
-	UserinfoEndpoint      string `json:"userinfo_endpoint"`
+	IntrospectionEndpoint string `json:"introspection_endpoint,omitempty"`
+	UserinfoEndpoint      string `json:"userinfo_endpoint,omitempty"`
+	RevocationEndpoint    string `json:"revocation_endpoint,omitempty"`
+	RegistrationEndpoint  string `json:"registration_endpoint,omitempty"`
 
-	Algorithms         []string `json:"id_token_signing_alg_values_supported"`
-	UserinfoAlgorithms []string `json:"userinfo_signing_alg_values_supported"`
+	TokenEndpointAuthSigningAlgValuesSupported         []string `json:"token_endpoint_auth_signing_alg_values_supported,omitempty"`
+	IntrospectionEndpointAuthSigningAlgValuesSupported []string `json:"introspection_endpoint_auth_signing_alg_values_supported,omitempty"`
+	IDTokenSigningAlgValuesSupported                   []string `json:"id_token_signing_alg_values_supported"`
+	UserinfoSigningAlgValuesSupported                  []string `json:"userinfo_signing_alg_values_supported,omitempty"`
+	RequestObjectSigningAlgValuesSupported             []string `json:"request_object_signing_alg_values_supported,omitempty"`
+	CodeChallengeMethodsSupported                      []string `json:"code_challenge_methods_supported,omitempty"`
 
+	IDTokenEncryptionAlgValuesSupported       []string `json:"id_token_encryption_alg_values_supported,omitempty"`
+	UserinfoEncryptionAlgValuesSupported      []string `json:"userinfo_encryption_alg_values_supported,omitempty"`
+	RequestObjectEncryptionAlgValuesSupported []string `json:"request_object_encryption_alg_values_supported,omitempty"`
+
+	IDTokenEncryptionEncValuesSupported       []string `json:"id_token_encryption_enc_values_supported,omitempty"`
+	UserinfoEncryptionEncValuesSupported      []string `json:"userinfo_encryption_enc_values_supported,omitempty"`
+	RequestObjectEncryptionEncValuesSupported []string `json:"request_object_encryption_enc_values_supported,omitempty"`
+
+	TokenEndpointAuthMethodsSupported         []string `json:"token_endpoint_auth_methods_supported,omitempty"`
+	IntrospectionEndpointAuthMethodsSupported []string `json:"introspection_endpoint_auth_methods_supported,omitempty"`
+	RevocationEndpointAuthMethodsSupported    []string `json:"revocation_endpoint_auth_methods_supported,omitempty"`
+
+	ACRValuesSupported     []string `json:"acr_values_supported,omitempty"`
+	DisplayValuesSupported []string `json:"display_values_supported,omitempty"`
 	SubjectTypesSupported  []string `json:"subject_types_supported"`
+	ResponseModesSupported []string `json:"response_modes_supported,omitempty"`
 	ResponseTypesSupported []string `json:"response_types_supported"`
-	ResponseModesSupported []string `json:"response_modes_supported"`
-	ScopesSupported        []string `json:"scopes_supported"`
-	ClaimsSupported        []string `json:"claims_supported"`
+	GrantTypesSupported    []string `json:"grant_types_supported,omitempty"`
+	ScopesSupported        []string `json:"scopes_supported,omitempty"`
+	ClaimsSupported        []string `json:"claims_supported,omitempty"`
+	ClaimTypesSupported    []string `json:"claim_types_supported,omitempty"`
+	UILocalesSupported     []string `json:"ui_locales_supported,omitempty"`
 
+	ClaimsParameterSupported           bool `json:"claims_parameter_supported"`
+	RequestParameterSupported          bool `json:"request_parameter_supported"`
 	RequestURIParameterSupported       bool `json:"request_uri_parameter_supported"`
+	RequireRequestURIRegistration      bool `json:"require_request_uri_registration"`
 	BackChannelLogoutSupported         bool `json:"backchannel_logout_supported"`
 	FrontChannelLogoutSupported        bool `json:"frontchannel_logout_supported"`
 	BackChannelLogoutSessionSupported  bool `json:"backchannel_logout_session_supported"`
 	FrontChannelLogoutSessionSupported bool `json:"frontchannel_logout_session_supported"`
+
+	ServiceDocumentation string `json:"service_documentation,omitempty"`
+	OPPolicyURI          string `json:"op_policy_uri,omitempty"`
+	OPTOSURI             string `json:"op_tos_uri,omitempty"`
 }
 
 // OpenIDSession holds OIDC Session information.

@@ -17,7 +17,7 @@ import (
 	"github.com/authelia/authelia/internal/utils"
 )
 
-func oidcAuthorize(ctx *middlewares.AutheliaCtx, rw http.ResponseWriter, r *http.Request) {
+func oidcAuthorization(ctx *middlewares.AutheliaCtx, rw http.ResponseWriter, r *http.Request) {
 	ar, err := ctx.Providers.OpenIDConnect.Fosite.NewAuthorizeRequest(ctx, r)
 	if err != nil {
 		logging.Logger().Errorf("Error occurred in NewAuthorizeRequest: %+v", err)
@@ -45,7 +45,7 @@ func oidcAuthorize(ctx *middlewares.AutheliaCtx, rw http.ResponseWriter, r *http
 	isAuthInsufficient := !client.IsAuthenticationLevelSufficient(userSession.AuthenticationLevel)
 
 	if isAuthInsufficient || (isConsentMissing(userSession.OIDCWorkflowSession, requestedScopes, requestedAudience)) {
-		oidcAuthorizeHandleAuthorizationOrConsentInsufficient(ctx, userSession, client, isAuthInsufficient, rw, r, ar)
+		oidcAuthorizationHandleAuthorizationOrConsentInsufficient(ctx, userSession, client, isAuthInsufficient, rw, r, ar)
 
 		return
 	}
@@ -141,7 +141,7 @@ func oidcGrantRequests(ar fosite.AuthorizeRequester, scopes, audiences []string,
 	return extraClaims
 }
 
-func oidcAuthorizeHandleAuthorizationOrConsentInsufficient(
+func oidcAuthorizationHandleAuthorizationOrConsentInsufficient(
 	ctx *middlewares.AutheliaCtx, userSession session.UserSession, client *oidc.InternalClient, isAuthInsufficient bool,
 	rw http.ResponseWriter, r *http.Request,
 	ar fosite.AuthorizeRequester) {

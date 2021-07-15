@@ -24,16 +24,32 @@ func oidcWellKnown(ctx *middlewares.AutheliaCtx) {
 		Issuer:  issuer,
 		JWKSURI: fmt.Sprintf("%s%s", issuer, oidcJWKsPath),
 
-		AuthorizationEndpoint: fmt.Sprintf("%s%s", issuer, oidcAuthorizePath),
+		AuthorizationEndpoint: fmt.Sprintf("%s%s", issuer, oidcAuthorizationPath),
 		TokenEndpoint:         fmt.Sprintf("%s%s", issuer, oidcTokenPath),
-		RevocationEndpoint:    fmt.Sprintf("%s%s", issuer, oidcRevokePath),
+		IntrospectionEndpoint: fmt.Sprintf("%s%s", issuer, oidcIntrospectionPath),
 		UserinfoEndpoint:      fmt.Sprintf("%s%s", issuer, oidcUserinfoPath),
+		RevocationEndpoint:    fmt.Sprintf("%s%s", issuer, oidcRevocationPath),
 
-		Algorithms:         []string{"RS256"},
-		UserinfoAlgorithms: []string{"none", "RS256"},
+		TokenEndpointAuthSigningAlgValuesSupported: []string{"RS256"},
+		IDTokenSigningAlgValuesSupported:           []string{"RS256"},
+		UserinfoSigningAlgValuesSupported:          []string{"none", "RS256"},
+		RequestObjectSigningAlgValuesSupported:     []string{"none", "RS256"},
+		CodeChallengeMethodsSupported:              []string{"plain", "S256"},
 
+		TokenEndpointAuthMethodsSupported:         []string{"client_secret_post", "client_secret_basic", "private_key_jwt", "none"},
+		IntrospectionEndpointAuthMethodsSupported: []string{"client_secret_post", "client_secret_basic", "private_key_jwt", "none"},
+		RevocationEndpointAuthMethodsSupported:    []string{"client_secret_post", "client_secret_basic", "private_key_jwt", "none"},
+
+		DisplayValuesSupported: []string{
+			"page",
+		},
 		SubjectTypesSupported: []string{
 			"public",
+		},
+		ResponseModesSupported: []string{
+			"form_post",
+			"query",
+			"fragment",
 		},
 		ResponseTypesSupported: []string{
 			"code",
@@ -45,10 +61,11 @@ func oidcWellKnown(ctx *middlewares.AutheliaCtx) {
 			"code token id_token",
 			"none",
 		},
-		ResponseModesSupported: []string{
-			"form_post",
-			"query",
-			"fragment",
+		GrantTypesSupported: []string{
+			"authorization_code",
+			"implicit",
+			"client_credentials",
+			"refresh_token",
 		},
 		ScopesSupported: []string{
 			"openid",
@@ -73,7 +90,15 @@ func oidcWellKnown(ctx *middlewares.AutheliaCtx) {
 			"groups",
 			"name",
 		},
+		ClaimTypesSupported: []string{
+			"normal",
+		},
+		UILocalesSupported: []string{
+			"en-US",
+		},
 
+		ClaimsParameterSupported:           true,
+		RequestParameterSupported:          false,
 		RequestURIParameterSupported:       false,
 		BackChannelLogoutSupported:         false,
 		FrontChannelLogoutSupported:        false,

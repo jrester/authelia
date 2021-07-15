@@ -63,12 +63,12 @@ const msMaximumRandomDelay = int64(85)
 
 // OIDC constants.
 const (
-	oidcJWKsPath       = "/api/oidc/jwks"
-	oidcAuthorizePath  = "/api/oidc/authorize"
-	oidcTokenPath      = "/api/oidc/token" //nolint:gosec // This is not a hard coded credential, it's a path.
-	oidcIntrospectPath = "/api/oidc/introspect"
-	oidcRevokePath     = "/api/oidc/revoke"
-	oidcUserinfoPath   = "/api/oidc/userinfo"
+	oidcJWKsPath          = "/api/oidc/jwks"
+	oidcAuthorizationPath = "/api/oidc/authorization"
+	oidcTokenPath         = "/api/oidc/token" //nolint:gosec // This is not a hard coded credential, it's a path.
+	oidcIntrospectionPath = "/api/oidc/introspection"
+	oidcRevocationPath    = "/api/oidc/revocation"
+	oidcUserinfoPath      = "/api/oidc/userinfo"
 
 	// Note: If you change this const you must also do so in the frontend at web/src/services/Api.ts.
 	oidcConsentPath = "/api/oidc/consent"

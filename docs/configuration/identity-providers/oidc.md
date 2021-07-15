@@ -162,7 +162,7 @@ required: yes
 {: .label .label-config .label-red }
 </div>
 
-The private key in DER base64 encoded PEM format used to encrypt the [OpenID Connect] JWT's.[¹](../../faq.md#why_only_use_a_private_issue_key_with_oidc)
+The private key in DER base64 encoded PEM format used to encrypt the [OpenID Connect] JWT's.[¹](../../faq.md#why-only-use-a-private-issuer-key-and-no-public-key-with-oidc)
 You must [generate this option yourself](#generating-a-random-secret). To create this option, use
 `docker run -u "$(id -u):$(id -g)" -v "$(pwd)":/keys authelia/authelia:latest authelia rsa generate --dir /keys`
 to generate both the private and public key in the current directory. You can then paste the
@@ -466,13 +466,11 @@ Authelia via https://auth.example.com, the discovery URL is https://auth.example
 |:-----------:|:------------------------------:|
 |Discovery    |.well-known/openid-configuration|
 |JWKS         |api/oidc/jwks                   |
-|Authorization|api/oidc/authorize              |
+|Authorization|api/oidc/authorization          |
 |Token        |api/oidc/token                  |
-|Introspection|api/oidc/introspect             |
-|Revoke       |api/oidc/revoke                 |
+|Introspection|api/oidc/introspection          |
+|Revocation   |api/oidc/revocation             |
 |Userinfo     |api/oidc/userinfo               |
-
-[//]: # (Links)
 
 [OpenID Connect]: https://openid.net/connect/
 [token lifespan]: https://docs.apigee.com/api-platform/antipatterns/oauth-long-expiration
