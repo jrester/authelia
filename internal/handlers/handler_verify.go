@@ -218,8 +218,14 @@ func handleUnauthorized(ctx *middlewares.AutheliaCtx, targetURL fmt.Stringer, is
 		friendlyMethod = rm
 	}
 
-	if rd != "" {
-		redirectionURL := ""
+	acceptsHTML := ctx.AcceptsMIME("text/html")
+	xhr := ctx.IsXHR()
+
+	xrw := ctx.Request.Header.Peek("X-Requested-With")
+	ctx.Logger.Warnf("Header X-Requested-With: %s", string(xrw))
+
+	if rd != "" && acceptsHTML && !xhr {
+		var redirectionURL string
 
 		if rm != "" {
 			redirectionURL = fmt.Sprintf("%s?rd=%s&rm=%s", rd, url.QueryEscape(targetURL.String()), rm)
@@ -231,15 +237,29 @@ func handleUnauthorized(ctx *middlewares.AutheliaCtx, targetURL fmt.Stringer, is
 
 		switch rm {
 		case fasthttp.MethodGet, fasthttp.MethodHead, "":
-			ctx.Redirect(redirectionURL, 302)
+			ctx.Redirect(redirectionURL, fasthttp.StatusFound)
 			ctx.SetBodyString(fmt.Sprintf("Found. Redirecting to %s", redirectionURL))
 		default:
-			ctx.Redirect(redirectionURL, 303)
+			ctx.Redirect(redirectionURL, fasthttp.StatusSeeOther)
 			ctx.SetBodyString(fmt.Sprintf("See Other. Redirecting to %s", redirectionURL))
 		}
 	} else {
-		ctx.Logger.Infof("Access to %s (method %s) is not authorized to user %s, sending 401 response", targetURL.String(), friendlyMethod, friendlyUsername)
-		ctx.ReplyUnauthorized()
+		ctx.Logger.Infof("Access to %s (method %s) is not authorized to user %s, sending 401 response (XHR: %v, HTML: %v)", targetURL.String(), friendlyMethod, friendlyUsername, xhr, acceptsHTML)
+
+		if xhr || !acceptsHTML && rd != "" {
+			var redirectionURL string
+
+			if rm != "" {
+				redirectionURL = fmt.Sprintf("%s?rd=%s&rm=%s", rd, url.QueryEscape(targetURL.String()), rm)
+			} else {
+				redirectionURL = fmt.Sprintf("%s?rd=%s", rd, url.QueryEscape(targetURL.String()))
+			}
+			ctx.SetStatusCode(fasthttp.StatusUnauthorized)
+			ctx.Response.Header.SetCanonical([]byte(fasthttp.HeaderLocation), []byte(redirectionURL))
+			ctx.SetBodyString(fmt.Sprintf("<a href=\"%s\">Unauthorized</a>", redirectionURL))
+		} else {
+			ctx.ReplyUnauthorized()
+		}
 	}
 }
 

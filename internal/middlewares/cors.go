@@ -23,6 +23,11 @@ func AutomaticCORSMiddleware(next RequestHandler) RequestHandler {
 	return func(ctx *AutheliaCtx) {
 		corsOrigin := ctx.Request.Header.Peek(headerOrigin)
 
+		requestedWith := ctx.Request.Header.Peek("X-Requested-With")
+		if requestedWith != nil {
+			ctx.Logger.Warnf("Requested With: %v", requestedWith)
+		}
+
 		if corsOrigin != nil {
 			corsOriginURL, err := url.Parse(string(corsOrigin))
 

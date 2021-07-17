@@ -718,7 +718,7 @@ func TestShouldRedirectWhenSessionInactiveForTooLongAndRDParamProvided(t *testin
 	mock.Ctx.QueryArgs().Add("rd", "https://login.example.com")
 	mock.Ctx.Request.Header.Set("X-Original-URL", "https://two-factor.example.com")
 	mock.Ctx.Request.Header.Set("X-Forwarded-Method", "GET")
-
+	mock.Ctx.Request.Header.Set("Accept", "text/html; charset=utf-8")
 	VerifyGet(verifyGetCfg)(mock.Ctx)
 
 	assert.Equal(t, "Found. Redirecting to https://login.example.com?rd=https%3A%2F%2Ftwo-factor.example.com&rm=GET",
@@ -737,6 +737,7 @@ func TestShouldRedirectWithCorrectStatusCodeBasedOnRequestMethod(t *testing.T) {
 	mock.Ctx.QueryArgs().Add("rd", "https://login.example.com")
 	mock.Ctx.Request.Header.Set("X-Original-URL", "https://two-factor.example.com")
 	mock.Ctx.Request.Header.Set("X-Forwarded-Method", "GET")
+	mock.Ctx.Request.Header.Set("Accept", "text/html; charset=utf-8")
 
 	VerifyGet(verifyGetCfg)(mock.Ctx)
 
@@ -747,6 +748,7 @@ func TestShouldRedirectWithCorrectStatusCodeBasedOnRequestMethod(t *testing.T) {
 	mock.Ctx.QueryArgs().Add("rd", "https://login.example.com")
 	mock.Ctx.Request.Header.Set("X-Original-URL", "https://two-factor.example.com")
 	mock.Ctx.Request.Header.Set("X-Forwarded-Method", "POST")
+	mock.Ctx.Request.Header.Set("Accept", "text/html; charset=utf-8")
 
 	VerifyGet(verifyGetCfg)(mock.Ctx)
 
@@ -801,6 +803,7 @@ func TestShouldURLEncodeRedirectionURLParameter(t *testing.T) {
 	require.NoError(t, err)
 
 	mock.Ctx.Request.Header.Set("X-Original-URL", "https://two-factor.example.com")
+	mock.Ctx.Request.Header.Set("Accept", "text/html; charset=utf-8")
 	mock.Ctx.Request.SetHost("mydomain.com")
 	mock.Ctx.Request.SetRequestURI("/?rd=https://auth.mydomain.com")
 

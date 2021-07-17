@@ -256,3 +256,24 @@ func (c *AutheliaCtx) GetOriginalURL() (*url.URL, error) {
 
 	return parsedURL, nil
 }
+
+// IsXHR returns true if the request is a XMLHttpRequest.
+func (c AutheliaCtx) IsXHR() (xhr bool) {
+	requestedWith := c.Request.Header.Peek("X-Requested-With")
+
+	return requestedWith != nil && string(requestedWith) == "XMLHttpRequest"
+}
+
+// AcceptsMIME takes a mime type and returns true if the request accepts that type or the wildcard type.
+func (c AutheliaCtx) AcceptsMIME(mime string) (acceptsMime bool) {
+	accepts := strings.Split(string(c.Request.Header.Peek("Accept")), ",")
+
+	for i, accept := range accepts {
+		mimeType := strings.Trim(strings.SplitN(accept, ";", 2)[0], " ")
+		if mimeType == mime || (i == 0 && mimeType == "*/*") {
+			return true
+		}
+	}
+
+	return false
+}
