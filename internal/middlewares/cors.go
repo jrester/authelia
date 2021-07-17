@@ -24,8 +24,18 @@ func AutomaticCORSMiddleware(next fasthttp.RequestHandler) fasthttp.RequestHandl
 			ctx.Response.Header.SetBytesV(headerAccessControlAllowOrigin, corsOrigin)
 			ctx.Response.Header.Set(headerVary, "Accept-Encoding, Origin")
 			ctx.Response.Header.Set(headerAccessControlAllowCredentials, "false")
-			ctx.Response.Header.SetBytesV(headerAccessControlAllowHeaders, ctx.Request.Header.Peek(headerAccessControlRequestHeaders))
-			ctx.Response.Header.SetBytesV(headerAccessControlAllowMethods, ctx.Request.Header.Peek(headerAccessControlRequestMethod))
+
+			corsHeaders := ctx.Request.Header.Peek(headerAccessControlRequestHeaders)
+			if corsHeaders != nil {
+				ctx.Response.Header.SetBytesV(headerAccessControlAllowHeaders, corsHeaders)
+			}
+
+			corsMethod := ctx.Request.Header.Peek(headerAccessControlRequestMethod)
+			if corsHeaders != nil {
+				ctx.Response.Header.SetBytesV(headerAccessControlAllowMethods, corsMethod)
+			} else {
+				ctx.Response.Header.Set(headerAccessControlAllowMethods, "GET")
+			}
 		}
 
 		next(ctx)
