@@ -45,6 +45,9 @@ func registerRoutes(configuration schema.Configuration, providers middlewares.Pr
 	r.GET("/", autheliaMiddleware(middlewares.AutomaticCORSMiddleware(middlewares.AutheliaFastHTTPRequestHandlerMiddleware(serveIndexHandler))))
 	r.OPTIONS("/", autheliaMiddleware(middlewares.AutomaticCORSMiddleware(handleOPTIONS)))
 
+	r.GET("/redirect", autheliaMiddleware(middlewares.AutomaticCORSMiddleware(handleRedirect)))
+	r.OPTIONS("/redirect", autheliaMiddleware(middlewares.AutomaticCORSMiddleware(handleOPTIONS)))
+
 	r.GET("/api/", serveSwaggerHandler)
 	r.GET("/api/"+apiFile, serveSwaggerAPIHandler)
 
