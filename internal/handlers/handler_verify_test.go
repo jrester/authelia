@@ -721,7 +721,7 @@ func TestShouldRedirectWhenSessionInactiveForTooLongAndRDParamProvided(t *testin
 	mock.Ctx.Request.Header.Set("Accept", "text/html; charset=utf-8")
 	VerifyGet(verifyGetCfg)(mock.Ctx)
 
-	assert.Equal(t, "Found. Redirecting to https://login.example.com?rd=https%3A%2F%2Ftwo-factor.example.com&rm=GET",
+	assert.Equal(t, "<a href=\"https://login.example.com/?rd=https%3A%2F%2Ftwo-factor.example.com&amp;rm=GET\">Found</a>",
 		string(mock.Ctx.Response.Body()))
 	assert.Equal(t, 302, mock.Ctx.Response.StatusCode())
 
@@ -741,7 +741,7 @@ func TestShouldRedirectWithCorrectStatusCodeBasedOnRequestMethod(t *testing.T) {
 
 	VerifyGet(verifyGetCfg)(mock.Ctx)
 
-	assert.Equal(t, "Found. Redirecting to https://login.example.com?rd=https%3A%2F%2Ftwo-factor.example.com&rm=GET",
+	assert.Equal(t, "<a href=\"https://login.example.com/?rd=https%3A%2F%2Ftwo-factor.example.com&amp;rm=GET\">Found</a>",
 		string(mock.Ctx.Response.Body()))
 	assert.Equal(t, 302, mock.Ctx.Response.StatusCode())
 
@@ -752,7 +752,7 @@ func TestShouldRedirectWithCorrectStatusCodeBasedOnRequestMethod(t *testing.T) {
 
 	VerifyGet(verifyGetCfg)(mock.Ctx)
 
-	assert.Equal(t, "See Other. Redirecting to https://login.example.com?rd=https%3A%2F%2Ftwo-factor.example.com&rm=POST",
+	assert.Equal(t, "<a href=\"https://login.example.com/?rd=https%3A%2F%2Ftwo-factor.example.com&amp;rm=POST\">See Other</a>",
 		string(mock.Ctx.Response.Body()))
 	assert.Equal(t, 303, mock.Ctx.Response.StatusCode())
 }
@@ -809,7 +809,7 @@ func TestShouldURLEncodeRedirectionURLParameter(t *testing.T) {
 
 	VerifyGet(verifyGetCfg)(mock.Ctx)
 
-	assert.Equal(t, "Found. Redirecting to https://auth.mydomain.com?rd=https%3A%2F%2Ftwo-factor.example.com",
+	assert.Equal(t, "<a href=\"https://auth.mydomain.com/?rd=https%3A%2F%2Ftwo-factor.example.com\">Found</a>",
 		string(mock.Ctx.Response.Body()))
 }
 
