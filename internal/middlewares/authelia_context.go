@@ -52,6 +52,13 @@ func AutheliaMiddleware(configuration schema.Configuration, providers Providers)
 	}
 }
 
+// AutheliaFastHTTPRequestHandlerMiddleware allows wrapping a fasthttp.RequestHandler in an AutheliaCtx.
+func AutheliaFastHTTPRequestHandlerMiddleware(next fasthttp.RequestHandler) RequestHandler {
+	return func(ctx *AutheliaCtx) {
+		next(ctx.RequestCtx)
+	}
+}
+
 // Error reply with an error and display the stack trace in the logs.
 func (c *AutheliaCtx) Error(err error, message string) {
 	b, marshalErr := json.Marshal(ErrorResponse{Status: "KO", Message: message})

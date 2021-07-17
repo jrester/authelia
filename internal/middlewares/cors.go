@@ -1,6 +1,10 @@
 package middlewares
 
-import "github.com/valyala/fasthttp"
+import (
+	"net/url"
+
+	"github.com/authelia/authelia/internal/utils"
+)
 
 const (
 	headerOrigin                      = "Origin"
@@ -15,26 +19,29 @@ const (
 )
 
 // AutomaticCORSMiddleware automatically adds all relevant CORS headers to a request.
-func AutomaticCORSMiddleware(next fasthttp.RequestHandler) fasthttp.RequestHandler {
-	return func(ctx *fasthttp.RequestCtx) {
+func AutomaticCORSMiddleware(next RequestHandler) RequestHandler {
+	return func(ctx *AutheliaCtx) {
 		corsOrigin := ctx.Request.Header.Peek(headerOrigin)
 
-		// TODO: Check Origin is protected by Authelia.
 		if corsOrigin != nil {
-			ctx.Response.Header.SetBytesV(headerAccessControlAllowOrigin, corsOrigin)
-			ctx.Response.Header.Set(headerVary, "Accept-Encoding, Origin")
-			ctx.Response.Header.Set(headerAccessControlAllowCredentials, "false")
+			corsOriginURL, err := url.Parse(string(corsOrigin))
 
-			corsHeaders := ctx.Request.Header.Peek(headerAccessControlRequestHeaders)
-			if corsHeaders != nil {
-				ctx.Response.Header.SetBytesV(headerAccessControlAllowHeaders, corsHeaders)
-			}
+			if err == nil && corsOriginURL != nil && utils.IsRedirectionSafe(*corsOriginURL, ctx.Configuration.Session.Domain) {
+				ctx.Response.Header.SetBytesV(headerAccessControlAllowOrigin, corsOrigin)
+				ctx.Response.Header.Set(headerVary, "Accept-Encoding, Origin")
+				ctx.Response.Header.Set(headerAccessControlAllowCredentials, "false")
 
-			corsMethod := ctx.Request.Header.Peek(headerAccessControlRequestMethod)
-			if corsHeaders != nil {
-				ctx.Response.Header.SetBytesV(headerAccessControlAllowMethods, corsMethod)
-			} else {
-				ctx.Response.Header.Set(headerAccessControlAllowMethods, "GET")
+				corsHeaders := ctx.Request.Header.Peek(headerAccessControlRequestHeaders)
+				if corsHeaders != nil {
+					ctx.Response.Header.SetBytesV(headerAccessControlAllowHeaders, corsHeaders)
+				}
+
+				corsMethod := ctx.Request.Header.Peek(headerAccessControlRequestMethod)
+				if corsHeaders != nil {
+					ctx.Response.Header.SetBytesV(headerAccessControlAllowMethods, corsMethod)
+				} else {
+					ctx.Response.Header.Set(headerAccessControlAllowMethods, "GET")
+				}
 			}
 		}
 

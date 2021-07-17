@@ -42,8 +42,8 @@ func registerRoutes(configuration schema.Configuration, providers middlewares.Pr
 	serveSwaggerAPIHandler := ServeTemplatedFile(swaggerAssets, apiFile, configuration.Server.Path, rememberMe, resetPassword, configuration.Session.Name, configuration.Theme)
 
 	r := router.New()
-	r.GET("/", middlewares.AutomaticCORSMiddleware(serveIndexHandler))
-	r.OPTIONS("/", middlewares.AutomaticCORSMiddleware(autheliaMiddleware(handleOPTIONS)))
+	r.GET("/", autheliaMiddleware(middlewares.AutomaticCORSMiddleware(middlewares.AutheliaFastHTTPRequestHandlerMiddleware(serveIndexHandler))))
+	r.OPTIONS("/", autheliaMiddleware(middlewares.AutomaticCORSMiddleware(handleOPTIONS)))
 
 	r.GET("/api/", serveSwaggerHandler)
 	r.GET("/api/"+apiFile, serveSwaggerAPIHandler)
