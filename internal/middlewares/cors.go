@@ -24,18 +24,6 @@ const (
 // AutomaticCORSMiddleware automatically adds all relevant CORS headers to a request.
 func AutomaticCORSMiddleware(next RequestHandler) RequestHandler {
 	return func(ctx *AutheliaCtx) {
-		if ctx.IsXHR() || !ctx.AcceptsMIME("text/html") {
-			host, err := ctx.ForwardedProtoHost()
-			if err != nil {
-				ctx.ReplyBadRequest()
-				return
-			}
-
-			ctx.SpecialRedirect(fmt.Sprintf("%s?rd=%s", host, string(ctx.XOriginalURL())), fasthttp.StatusUnauthorized)
-
-			return
-		}
-
 		corsOrigin := ctx.Request.Header.Peek(headerOrigin)
 
 		requestedWith := ctx.Request.Header.Peek("X-Requested-With")
@@ -63,6 +51,18 @@ func AutomaticCORSMiddleware(next RequestHandler) RequestHandler {
 					ctx.Response.Header.Set(headerAccessControlAllowMethods, "GET")
 				}
 			}
+		}
+
+		if ctx.IsXHR() || !ctx.AcceptsMIME("text/html") {
+			host, err := ctx.ForwardedProtoHost()
+			if err != nil {
+				ctx.ReplyBadRequest()
+				return
+			}
+
+			ctx.SpecialRedirect(fmt.Sprintf("%s?rd=%s", host, string(ctx.XOriginalURL())), fasthttp.StatusUnauthorized)
+
+			return
 		}
 
 		next(ctx)
