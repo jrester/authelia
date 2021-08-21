@@ -12,6 +12,7 @@ import {
     RegisterSecurityKeyRoute,
     RegisterOneTimePasswordRoute,
     LogoutRoute,
+    DashboardRoute,
     ConsentRoute,
 } from "@constants/Routes";
 import NotificationsContext from "@hooks/NotificationsContext";
@@ -28,6 +29,7 @@ import ResetPasswordStep1 from "@views/ResetPassword/ResetPasswordStep1";
 import ResetPasswordStep2 from "@views/ResetPassword/ResetPasswordStep2";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { Dashboard } from "@material-ui/icons";
 
 faConfig.autoAddCss = false;
 
@@ -82,6 +84,9 @@ const App: React.FC = () => {
                         </Route>
                         <Route path={ConsentRoute} exact>
                             <ConsentView />
+                        </Route>
+                        <Route path={DashboardRoute} exact>
+                            <Dashboard />
                         </Route>
                         <Route path={FirstFactorRoute}>
                             <LoginPortal rememberMe={getRememberMe()} resetPassword={getResetPassword()} />
