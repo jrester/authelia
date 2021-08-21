@@ -20,6 +20,7 @@ import { Notification } from "@models/Notifications";
 import * as themes from "@themes/index";
 import { getBasePath } from "@utils/BasePath";
 import { getRememberMe, getResetPassword, getTheme } from "@utils/Configuration";
+import Dashboard from "@views/Dashboard/Dashboard";
 import RegisterOneTimePassword from "@views/DeviceRegistration/RegisterOneTimePassword";
 import RegisterSecurityKey from "@views/DeviceRegistration/RegisterSecurityKey";
 import ConsentView from "@views/LoginPortal/ConsentView/ConsentView";
@@ -29,8 +30,6 @@ import ResetPasswordStep1 from "@views/ResetPassword/ResetPasswordStep1";
 import ResetPasswordStep2 from "@views/ResetPassword/ResetPasswordStep2";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { Dashboard } from "@material-ui/icons";
-
 faConfig.autoAddCss = false;
 
 function Theme() {
